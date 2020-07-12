@@ -8,7 +8,7 @@ public interface UserDAO {
 
     public User findById(String userEmail);
     public List<User> findAll();
-    public void save(User user);
+    public User save(User user);
     public void deleteById(String userEmail);
 
 }

@@ -8,6 +8,8 @@ import com.userstasks.userstasks.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,29 +21,29 @@ public class TaskController {
 
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
 
-    Logger logger = LoggerFactory.getLogger(TaskController.class);
+   private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     @GetMapping
-    public List<Task> findAllTask(){
-        return taskService.findAll();
+    public ResponseEntity findAllTask(){
+
+        try {
+            return ResponseEntity.ok(taskService.findAll());
+        } catch (Exception ex){
+            logger.error("An error occurred during getting list of tasks, {}", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during getting list of tasks");
+        }
     }
 
     @GetMapping("/{taskId}")
-    public Task findTaskById(@PathVariable("taskId") int taskId){
+    public ResponseEntity findTaskById(@PathVariable("taskId") int taskId){
 
-
-        Task task=null;
-        task=taskService.findById(taskId);
         try {
-         if(task==null)
-             logger.info("Task id is found " + taskId);
-             return task;
-        }
-        catch (NullPointerException e){
-            throw new NullPointerException("User Email not found " +taskId );
-
+            return ResponseEntity.ok(taskService.findById(taskId));
+        } catch (Exception ex){
+            logger.error("An error occurred during getting a task, {}", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during getting a task");
         }
 
     }
@@ -50,17 +52,32 @@ public class TaskController {
 
    
     @PostMapping
-    public void addTask( @RequestBody Task task) {
+    public ResponseEntity addTask( @RequestBody Task task) {
 
-        User user=new User();
-        taskService.save(task);
+        try {
+            logger.info("task inserted correctly");
+            return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(task));
+
+        } catch (Exception ex){
+            logger.error("An error occurred during saving a new user, {}", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during saving a new task");
+        }
+
 
     }
 
     @DeleteMapping("/{taskId}")
     @Transactional
-    public void deleteTask(@PathVariable("taskId") int taskId){
-        taskService.deleteById(taskId);
+    public ResponseEntity deleteTask(@PathVariable("taskId") int taskId){
+
+        try {
+            taskService.deleteById(taskId);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("The task deleted successfully");
+        } catch (Exception ex){
+            logger.error("An error occurred during deleting a task, {}", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during deleting a task");
+        }
+
     }
 
 

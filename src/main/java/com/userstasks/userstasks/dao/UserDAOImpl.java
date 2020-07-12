@@ -32,10 +32,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
 
         Session session = entityManager.unwrap(Session.class);
         session.saveOrUpdate(user);
+        return user;
 
     }
 

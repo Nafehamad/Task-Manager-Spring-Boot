@@ -38,11 +38,11 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public void save(Task task) {
+    public Task save(Task task) {
 
         Session session = entityManager.unwrap(Session.class);
         session.saveOrUpdate(task);
-
+        return task;
     }
 
     @Override

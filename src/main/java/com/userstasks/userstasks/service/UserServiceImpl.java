@@ -9,9 +9,10 @@ import java.util.List;
 
 @Component
 public class UserServiceImpl implements UserService {
-
     @Autowired
-    private UserDAO userDAO;
+   private UserDAO userDAO;
+
+
 
     @Override
     public List<User> findAll() {
@@ -24,8 +25,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         userDAO.save(user);
+        return user;
+
 
     }
 

@@ -9,6 +9,6 @@ public interface TaskDAO {
 
     public Task findById(int taskId);
     public List<Task> findAll();
-    public void save(Task task);
+    public Task save(Task task);
     public void deleteById(int taskId);
 }
