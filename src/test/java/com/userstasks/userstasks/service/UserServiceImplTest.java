@@ -44,9 +44,9 @@ public class UserServiceImplTest {
 
     @Test
     public void save() {
-       User user=new User();
-       userDAO.save(user);
-       when(userDAO.save(user)).thenReturn(user);
+        User user = new User("sam", "newuser1@gmail.com", "pwd", 20);
+        userDAO.save(user);
+        when(userDAO.save(user)).thenReturn(user);
     }
 
     @Test

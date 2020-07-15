@@ -49,6 +49,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void save() {
+
         Task task=new Task();
         taskDAO.save(task);
         when(taskDAO.save(task)).thenReturn(task);
@@ -56,8 +57,8 @@ public class TaskServiceImplTest {
 
     @Test
     public void deleteById() {
-        User user=new User();
 
+        User user=new User();
         taskServiceImpl.deleteById(1);
         verify(taskDAO).deleteById(1);
 

@@ -4,6 +4,8 @@ package com.userstasks.userstasks.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.userstasks.userstasks.dao.UserDAOImpl;
@@ -19,37 +21,52 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskDAOImplTest {
-
+    @Mock
+    EntityManager entityManager;
+    @Mock
+    Query query;
+    @Mock
+    CriteriaQuery criteriaQuery;
+    @Mock
+    TypedQuery<Task> query1;
+    @Mock
+    Session session;
     @Mock
     TaskDAO taskDAO;
-    @Mock
+    @InjectMocks
     TaskDAOImpl taskDAOImpl;
+    private List<Task> taskList=new ArrayList<Task>();
+
 
     @Test
    public void findById() {
 
-        Task task=new Task();
-        when(taskDAO.findById(1)).thenReturn( task);
-        Assert.assertEquals("",taskDAOImpl.findById(1),null);
-        Assert.assertNull(taskDAOImpl.findById(1));
+        Task task=new Task(1,"one",false);
+        when(entityManager.createQuery(any(String.class), eq(Task.class))).thenReturn(query1);
+        when(query1.setParameter(any(String.class), any(String.class))).thenReturn(query1);
+        when(query1.getSingleResult()).thenReturn(task);
 
     }
 
     @Test
   public   void findAll() {
 
-        List<Task> tasks = new ArrayList<Task>();
-        when(taskDAO.findAll()).thenReturn(tasks);
-        Assert.assertEquals(taskDAOImpl.findAll(),tasks);
+        Task task=new Task(1,"one",false);
+        when(entityManager.createQuery(any(String.class), eq(Task.class))).thenReturn(query1);
+        when(query1.setParameter(any(String.class), any(String.class))).thenReturn(query1);
+        when(query1.getResultList()).thenReturn(taskList);
     }
 
     @Test
-  public   void save() {
+  public  void save() {
 
         Task task=new Task();
         taskDAO.save(task);
@@ -59,8 +76,10 @@ public class TaskDAOImplTest {
     @Test
    public void deleteById() {
 
-        taskDAO.deleteById(1);
-        verify(taskDAO).deleteById(1);
+        int id=1;
+        Task task=new Task();
+        when(entityManager.createQuery("delete from Task where id=:id")).thenReturn(query);
+        when(query.executeUpdate()).thenReturn(1);
 
     }
 }
